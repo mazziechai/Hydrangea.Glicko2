@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hydrangea.Glicko2", "src\Hydrangea.Glicko2\Hydrangea.Glicko2.csproj", "{A7F09D64-EE24-4A1A-92C0-38C299705736}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7F09D64-EE24-4A1A-92C0-38C299705736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7F09D64-EE24-4A1A-92C0-38C299705736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7F09D64-EE24-4A1A-92C0-38C299705736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7F09D64-EE24-4A1A-92C0-38C299705736}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96CFC505-46B3-412E-AD0C-412D53675ECE}
+	EndGlobalSection
+EndGlobal
