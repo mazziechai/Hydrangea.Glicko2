@@ -315,7 +315,7 @@ namespace Hydrangea.Glicko2
         /// </summary>
         /// <param name="φ">The rating deviation.</param>
         /// <returns></returns>
-        private static double G(double φ)
+        protected static double G(double φ)
         {
             return 1 / Sqrt(1 + 3 * Pow(φ, 2) / Pow(PI, 2));
         }
@@ -328,7 +328,7 @@ namespace Hydrangea.Glicko2
         /// <param name="μj">The opponent's rating.</param>
         /// <param name="φⱼ">The opponent's RD.</param>
         /// <returns></returns>
-        private static double E(double μ, double μⱼ, double φⱼ)
+        protected static double E(double μ, double μⱼ, double φⱼ)
         {
             return 1 / (1 + Exp(-G(φⱼ) * (μ - μⱼ)));
         }
@@ -340,7 +340,7 @@ namespace Hydrangea.Glicko2
         /// <param name="μⱼ">The opponent's rating.</param>
         /// <param name="φⱼ">The opponent's RD.</param>
         /// <returns></returns>
-        private static double V(double μ, double μⱼ, double φⱼ)
+        protected static double V(double μ, double μⱼ, double φⱼ)
         {
             return Pow(G(φⱼ), 2) * E(μ, μⱼ, φⱼ) * (1 - E(μ, μⱼ, φⱼ));
         }
@@ -353,7 +353,7 @@ namespace Hydrangea.Glicko2
         /// <param name="φⱼ">The opponent's RD.</param>
         /// <param name="score"/>The actual score.</param>
         /// <returns></returns>
-        private static double S(double μ, double μⱼ, double φⱼ, double score)
+        protected static double S(double μ, double μⱼ, double φⱼ, double score)
         {
             return G(φⱼ) * (score - E(μ, μⱼ, φⱼ));
         }
@@ -366,8 +366,8 @@ namespace Hydrangea.Glicko2
         /// <param name="Δ">The estimated improvement in rating.</param>
         /// <param name="v">The variance.</param>
         /// <returns></returns>
-        private double DetermineVolatility(double φ, double σ,
-                                           double Δ, double v)
+        protected double DetermineVolatility(double φ, double σ,
+                                             double Δ, double v)
         {
             // Setting all of the variables.
             double Δsq = Pow(Δ, 2);
