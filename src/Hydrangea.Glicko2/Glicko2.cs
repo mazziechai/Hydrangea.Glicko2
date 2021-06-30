@@ -135,16 +135,6 @@ namespace Hydrangea.Glicko2
         public RatingPeriod Period { get; init; } = new();
 
         /// <summary>
-        /// Calls <see cref='UpdateRatings(RatingPeriod)'/> with the 
-        /// <see cref='RatingPeriod'/> stored within this class.
-        /// </summary>
-        /// <seealso cref='UpdateRatings(RatingPeriod)'/>
-        public void UpdateRatings()
-        {
-            UpdateRatings(Period);
-        }
-
-        /// <summary>
         /// Calculates all of the rating changes for the participants in a
         /// <see cref='RatingPeriod'/>.
         /// <para>
@@ -160,22 +150,22 @@ namespace Hydrangea.Glicko2
         /// ratings.
         /// </param>
         /// <seealso cref='Rate'/>
-        public void UpdateRatings(RatingPeriod period)
+        public void UpdateRatings()
         {
-            foreach (var participant in period.Participants)
+            foreach (var participant in Period.Participants)
             {
-                Rate(participant, period.GetParticipantResults(participant));
+                Rate(participant, Period.GetParticipantResults(participant));
             }
 
             // Once every participant has been assigned their new ratings,
             // finalize them. See RatingInfo.FinalizeRating() for more info.
-            foreach (var participant in period.Participants)
+            foreach (var participant in Period.Participants)
             {
                 participant.FinalizeRating();
             }
 
             // Finally, clear the results so that it can be used again.
-            period.Results.Clear();
+            Period.Results.Clear();
         }
 
         /// <summary>
