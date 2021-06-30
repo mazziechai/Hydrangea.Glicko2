@@ -169,76 +169,6 @@ namespace Hydrangea.Glicko2
         }
 
         /// <summary>
-        /// Calculates the new rating for a <see cref='RatingInfo'/> with
-        /// a <see cref='Result'/> list. 
-        /// <para>
-        /// If the <see cref='IList{T}'/> is empty, only a new RD will be
-        /// calculated.
-        /// </para>
-        /// </summary>
-        /// <param name="participant"></param>
-        /// <param name="results"></param>
-        public void Rate(RatingInfo participant, IList<Result> results)
-        {
-            var rating = ConvertRatingToGlicko2(participant.Rating,
-                                                participant.Deviation);
-            var μ = rating[0];
-            var φ = rating[1];
-            var σ = participant.Volatility;
-
-            // The variance based on results.
-            double v = 0;
-            // The Glicko-2 score, m(G(φⱼ) * (score - E(μ, μⱼ, φⱼ)))
-            double s = 0;
-
-            for (var i = 0; results.Count > i; i++)
-            {
-                // Getting the opponent.
-                var opponent = results[i].Participants.First(
-                    p => !p.Equals(participant)
-                );
-                // Setting all the necessary variables.
-                var ratingⱼ = ConvertRatingToGlicko2(opponent.Rating,
-                                                     opponent.Deviation);
-                var μⱼ = ratingⱼ[0];
-                var φⱼ = ratingⱼ[1];
-                var score = results[i].Scores[participant];
-
-                // Compute the inverse of the variance.
-                v += V(μ, μⱼ, φⱼ);
-                // Compute the Glicko-2 score.
-                s += S(μ, μⱼ, φⱼ, score);
-            }
-            // Since we calculated the inverse, make it direct.
-            v = Pow(v, -1);
-            // The expected difference in rating.
-            double Δ = v * s;
-
-            if (results.Count != 0)
-            {
-                // Calculate the new volatility.
-                var σʹ = DetermineVolatility(φ, σ, Δ, v);
-                // Calculate the new RD.
-                var φ1 = Sqrt(Pow(φ, 2) + Pow(σʹ, 2));
-                var φʹ = 1 / (Sqrt(1 / Pow(φ1, 2)) + 1 / v);
-
-                // Calculate the new rating.
-                double μʹ = μ + Pow(φʹ, 2) * s;
-
-                participant.WorkingRating = μʹ * 173.7178 + DefaultRating;
-                participant.WorkingDeviation = φʹ * 173.7178;
-                participant.WorkingVolatility = σʹ;
-            }
-            else
-            {
-                // No results for this participant, so just update the RD.
-                var φʹ = 1 / Sqrt(1 / Pow(φ, 2)) + 1 / v;
-
-                participant.WorkingDeviation = φʹ;
-            }
-        }
-
-        /// <summary>
         /// Creates a new <see cref='RatingInfo'/> using the values in
         /// <see cref='DefaultRating'/>, <see cref='DefaultDeviation'/>,
         /// and <see cref='DefaultVolatility'/>.
@@ -271,6 +201,7 @@ namespace Hydrangea.Glicko2
         {
             Period.AddResult(result);
         }
+
         /// <summary>
         /// Adds every <see cref='Result'/> in a list to the
         /// <see cref='RatingPeriod'/> stored in the <see cref='Period'/>
@@ -283,6 +214,75 @@ namespace Hydrangea.Glicko2
         public void RecordResults(IList<Result> results)
         {
             Period.AddResults(results);
+        }
+
+        /// <summary>
+        /// Calculates the new rating for a <see cref='RatingInfo'/> with
+        /// a <see cref='Result'/> list. 
+        /// <para>
+        /// If the <see cref='IList{T}'/> is empty, only a new RD will be
+        /// calculated.
+        /// </para>
+        /// </summary>
+        /// <param name="participant"></param>
+        /// <param name="results"></param>
+        public virtual void Rate(RatingInfo participant, IList<Result> results)
+        {
+            var rating = ConvertRatingToGlicko2(participant.Rating,
+                                                participant.Deviation);
+            var μ = rating[0];
+            var φ = rating[1];
+            var σ = participant.Volatility;
+
+            // The variance based on results.
+            double v = 0;
+            // The Glicko-2 score
+            double s = 0;
+
+            if (results.Count != 0)
+            {
+                for (var i = 0; results.Count > i; i++)
+                {
+                    // Getting the opponent.
+                    var opponent = results[i].Participants.First(
+                        p => !p.Equals(participant)
+                    );
+                    // Setting all the necessary variables.
+                    var ratingⱼ = ConvertRatingToGlicko2(opponent.Rating,
+                                                         opponent.Deviation);
+                    var μⱼ = ratingⱼ[0];
+                    var φⱼ = ratingⱼ[1];
+                    var score = results[i].Scores[participant];
+
+                    // Compute the inverse of the variance.
+                    v += V(μ, μⱼ, φⱼ);
+                    // Compute the Glicko-2 score.
+                    s += S(μ, μⱼ, φⱼ, score);
+                }
+                // Since we calculated the inverse, make it direct.
+                v = Pow(v, -1);
+                // The expected difference in rating.
+                double Δ = v * s;
+                // Calculate the new volatility.
+                var σʹ = DetermineVolatility(φ, σ, Δ, v);
+                // Calculate the new RD.
+                var φ1 = Sqrt(Pow(φ, 2) + Pow(σʹ, 2));
+                var φʹ = 1 / (Sqrt(1 / Pow(φ1, 2)) + 1 / v);
+
+                // Calculate the new rating.
+                double μʹ = μ + Pow(φʹ, 2) * s;
+
+                participant.WorkingRating = μʹ * 173.7178 + DefaultRating;
+                participant.WorkingDeviation = φʹ * 173.7178;
+                participant.WorkingVolatility = σʹ;
+            }
+            else
+            {
+                // No results for this participant, so just update the RD.
+                var φʹ = Sqrt(Pow(φ, 2) + Pow(σ, 2));
+
+                participant.WorkingDeviation = φʹ;
+            }
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Hydrangea.Glicko2
         /// </summary>
         /// <param name="φ">The rating deviation.</param>
         /// <returns></returns>
-        protected static double G(double φ)
+        protected virtual double G(double φ)
         {
             return 1 / Sqrt(1 + 3 * Pow(φ, 2) / Pow(PI, 2));
         }
@@ -318,21 +318,9 @@ namespace Hydrangea.Glicko2
         /// <param name="μj">The opponent's rating.</param>
         /// <param name="φⱼ">The opponent's RD.</param>
         /// <returns></returns>
-        protected static double E(double μ, double μⱼ, double φⱼ)
+        protected virtual double E(double μ, double μⱼ, double φⱼ)
         {
             return 1 / (1 + Exp(-G(φⱼ) * (μ - μⱼ)));
-        }
-
-        /// <summary>
-        /// Calculates the variance in rating.
-        /// </summary>
-        /// <param name="μ">The rating.</param>
-        /// <param name="μⱼ">The opponent's rating.</param>
-        /// <param name="φⱼ">The opponent's RD.</param>
-        /// <returns></returns>
-        protected static double V(double μ, double μⱼ, double φⱼ)
-        {
-            return Pow(G(φⱼ), 2) * E(μ, μⱼ, φⱼ) * (1 - E(μ, μⱼ, φⱼ));
         }
 
         /// <summary>
@@ -343,10 +331,23 @@ namespace Hydrangea.Glicko2
         /// <param name="φⱼ">The opponent's RD.</param>
         /// <param name="score"/>The actual score.</param>
         /// <returns></returns>
-        protected static double S(double μ, double μⱼ, double φⱼ, double score)
+        protected virtual double S(double μ, double μⱼ, double φⱼ, double score)
         {
             return G(φⱼ) * (score - E(μ, μⱼ, φⱼ));
         }
+
+        /// <summary>
+        /// Calculates the variance in rating.
+        /// </summary>
+        /// <param name="μ">The rating.</param>
+        /// <param name="μⱼ">The opponent's rating.</param>
+        /// <param name="φⱼ">The opponent's RD.</param>
+        /// <returns></returns>
+        protected virtual double V(double μ, double μⱼ, double φⱼ)
+        {
+            return Pow(G(φⱼ), 2) * E(μ, μⱼ, φⱼ) * (1 - E(μ, μⱼ, φⱼ));
+        }
+
 
         /// <summary>
         /// Calculates the new volatility (σ′).
@@ -356,8 +357,8 @@ namespace Hydrangea.Glicko2
         /// <param name="Δ">The estimated improvement in rating.</param>
         /// <param name="v">The variance.</param>
         /// <returns></returns>
-        protected double DetermineVolatility(double φ, double σ,
-                                             double Δ, double v)
+        protected virtual double DetermineVolatility(double φ, double σ,
+                                                     double Δ, double v)
         {
             // Setting all of the variables.
             double Δsq = Pow(Δ, 2);
