@@ -281,7 +281,7 @@ namespace Hydrangea.Glicko2
                 // No results for this participant, so just update the RD.
                 var φʹ = Sqrt(Pow(φ, 2) + Pow(σ, 2));
 
-                participant.WorkingDeviation = φʹ;
+                participant.WorkingDeviation = φʹ * 173.7178;
             }
         }
 
