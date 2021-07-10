@@ -1,5 +1,5 @@
 # Hydrangea.Glicko2
-Another C# implementation of Glicko-2 with a focus on extensibility.
+Another C# implementation of Glicko-2 with a focus on extensibility. I created this library for my ranked matchmaking Discord bot.
 
 ## How to use
 
