@@ -214,8 +214,7 @@ namespace Hydrangea.Glicko2
         /// An <see cref='ImmutableDictionary{TKey, TValue}'/> containing
         /// <see cref='RatingInfo'/> objects matched with a double.
         /// </value>
-        public ImmutableDictionary<RatingInfo, double> Scores
-        { get; } = new Dictionary<RatingInfo, double>().ToImmutableDictionary();
+        public ImmutableDictionary<RatingInfo, double> Scores { get; }
         /// <summary>
         /// A convenience property for quickly getting all of the
         /// <see cref='RatingInfo'/> objects in <see cref='Scores'/>.
@@ -224,8 +223,7 @@ namespace Hydrangea.Glicko2
         /// An <see cref='ImmutableHashSet{T}'/> containing
         /// <see cref='RatingInfo'/> objects.
         /// </value>
-        public ImmutableHashSet<RatingInfo> Participants
-        { get; } = new HashSet<RatingInfo>().ToImmutableHashSet();
+        public ImmutableHashSet<RatingInfo> Participants { get; }
 
         /// <summary>
         /// A constructor that uses two <see cref='RatingInfo'/> objects
