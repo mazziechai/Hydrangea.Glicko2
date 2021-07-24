@@ -38,34 +38,6 @@ namespace Hydrangea.Glicko2
     public class Glicko2
     {
         /// <summary>
-        /// <para>
-        /// The volatility constraint (τ) to use when calculating 
-        /// a new volatility. Smaller values prevent the volatility from
-        /// changing too much, which then prevents massive changes in ratings
-        /// from an improbable result (as calculated by the system).
-        /// </para>
-        /// Defaults to 0.5.
-        /// </summary>
-        /// <value>
-        /// The recommended setting is a double between 0.3 and 1.2 as per
-        /// Mark Glickman's Glicko-2 specifications.
-        /// </value>
-        public double VolatilityConstraint { get; init; }
-        /// <summary>
-        /// <para>
-        /// The convergence tolerance (ε) to use when calculating a new
-        /// volatility. This is used to restrict how many iterations we are
-        /// performing in the algorithm to get as close to the limit as
-        /// possible, since it would take an infinite amount to actually
-        /// converge. This creates a margin of error that should hopefully
-        /// be small enough while not taking too many iterations, which
-        /// would lower the margin of error insignificantly.
-        /// </para>
-        /// Defaults to 0.000001.
-        /// </summary>
-        public double ConvergenceTolerance { get; init; }
-
-        /// <summary>
         /// The score assigned to wins.
         /// </summary>
         public double WinScore { get; init; } = 1.0;
