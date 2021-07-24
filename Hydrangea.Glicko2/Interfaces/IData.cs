@@ -23,11 +23,6 @@ namespace Hydrangea.Glicko2.Interfaces
     public interface IRatingInfo
     {
         /// <summary>
-        /// Differentiates between different ratings beyond reference equality.
-        /// </summary>
-        public int Id { get; }
-
-        /// <summary>
         /// The actual rating number, r.
         /// </summary>
         public double Rating { get; }
