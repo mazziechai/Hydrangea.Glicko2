@@ -35,7 +35,7 @@ namespace Hydrangea.Glicko2
     /// glicko2.UpdateRatings();
     /// </code>
     /// </example>
-    public class Glicko2
+    public class Glicko2 : IGlicko2
     {
         /// <summary>
         /// The score assigned to wins.
@@ -53,7 +53,7 @@ namespace Hydrangea.Glicko2
         /// <summary>
         /// The rating period to store results and participants in.
         /// </summary>
-        public IRatingPeriod Period { get; }
+        public IRatingPeriod RatingPeriod { get; }
         /// <summary>
         /// The rating calculator used to update ratings.
         /// </summary>
@@ -61,26 +61,25 @@ namespace Hydrangea.Glicko2
 
         public Glicko2(IRatingPeriod period, ICalculator calculator)
         {
-            Period = period;
+            RatingPeriod = period;
             Calculator = calculator;
         }
 
         /// <summary>
         /// Calculates all of the rating changes for the participants in
-        /// the <see cref='Period'/>.
-        /// <para>
-        /// This method clears the <see cref='IRatingPeriod'/> of all
-        /// participants and results. If this is unwanted behavior, use
-        /// <see cref='ICalculator.Rate'/> method.
-        /// </para>
+        /// the <see cref='RatingPeriod'/> using the Results stored in it.
         /// </summary>
+        /// <remarks>
+        /// This method clears all of the results in the rating period but
+        /// not the participants.
+        /// </remarks>
         public void UpdateRatings()
         {
             HashSet<IRatingInfo> updatedRatings = new();
 
-            foreach (var participant in Period.Participants)
+            foreach (var participant in RatingPeriod.Participants)
             {
-                updatedRatings.Add(Calculator.Rate(participant, Period.GetParticipantResults(participant)));
+                updatedRatings.Add(Calculator.Rate(participant, RatingPeriod.GetParticipantResults(participant)));
             }
 
             foreach (var rating in updatedRatings)
@@ -89,13 +88,13 @@ namespace Hydrangea.Glicko2
             }
 
             // Clear the results in the rating period so that it can be used again.
-            Period.Results.Clear();
+            RatingPeriod.Results.Clear();
         }
 
         /// <summary>
-        /// Creates a result from two <see cref='RatingInfo'/>s where the first
+        /// Creates a result from two ratings where the first
         /// rating is the winner and the second rating is the loser, unless it
-        /// is a draw. Then, it adds the result to the <see cref='Period'/>.
+        /// is a draw. Then, it adds the result to the <see cref='RatingPeriod'/>.
         /// </summary>
         public void CreateResult(RatingInfo winner, RatingInfo loser, bool draw = false)
         {
@@ -103,7 +102,7 @@ namespace Hydrangea.Glicko2
             if (!draw) result = new(winner, WinScore, loser, LossScore);
             else result = new(winner, DrawScore, loser, DrawScore);
 
-            Period.AddResult(result);
+            RatingPeriod.AddResult(result);
         }
     }
 }
