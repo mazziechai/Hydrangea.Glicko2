@@ -25,8 +25,6 @@ namespace Hydrangea.Glicko2
     /// </summary>
     public class RatingInfo : IRatingInfo
     {
-        public int Id { get; }
-
         public double Rating { get; private set; } = 1500;
         public double RatingDeviation { get; private set; } = 350;
         public double Volatility { get; private set; } = 0.06;
@@ -56,25 +54,6 @@ namespace Hydrangea.Glicko2
             RatingDeviation = WorkingRatingDeviation;
             Volatility = WorkingVolatility;
         }
-
-        /// <summary>
-        /// Checks if the RatingInfo IDs are equal.
-        /// </summary>
-        public static bool operator ==(RatingInfo x, RatingInfo y) => x.Equals(y);
-        /// <summary>
-        /// Checks if the RatingInfo IDs are not equal.
-        /// </summary>
-        public static bool operator !=(RatingInfo x, RatingInfo y) => !x.Equals(y);
-
-        public override bool Equals(object o)
-        {
-            if (o == null) return false;
-
-            var x = o as RatingInfo;
-            return x != null && Id == x.Id;
-        }
-
-        public override int GetHashCode() => Id;
     }
 
     /// <summary>
