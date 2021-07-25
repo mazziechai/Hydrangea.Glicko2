@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Glicko-2. If not, see <http://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
@@ -92,8 +93,7 @@ namespace Hydrangea.Glicko2.Interfaces
                 var σʹ = DetermineVolatility(φ, σ, Δ, v);
                 // Calculate the new RD.
                 var φ1 = Sqrt(Pow(φ, 2) + Pow(σʹ, 2));
-                var φʹ = 1 / (Sqrt(1 / Pow(φ1, 2)) + 1 / v);
-
+                var φʹ = 1 / Sqrt(1 / Pow(φ1, 2) + 1 / v);
                 // Calculate the new rating.
                 double μʹ = μ + Pow(φʹ, 2) * s;
 
@@ -108,7 +108,9 @@ namespace Hydrangea.Glicko2.Interfaces
 
                 rating.WorkingRatingDeviation = φʹ * 173.7178;
             }
-
+#if DEBUG
+            Console.WriteLine($"Working RatingInfo: {rating.WorkingRating}, {rating.WorkingRatingDeviation}, {rating.WorkingVolatility}");
+#endif
             return rating;
         }
 
