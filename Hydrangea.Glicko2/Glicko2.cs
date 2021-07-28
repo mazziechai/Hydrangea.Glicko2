@@ -53,7 +53,7 @@ namespace Hydrangea.Glicko2
         /// <summary>
         /// The rating period to store results and participants in.
         /// </summary>
-        public IRatingPeriod RatingPeriod { get; }
+        public IRatingPeriod RatingPeriod { get; set; }
         /// <summary>
         /// The rating calculator used to update ratings.
         /// </summary>
